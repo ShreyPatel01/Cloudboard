@@ -5,11 +5,11 @@ class Whiteboard extends Component {
     constructor(props){
         super(props);
     }
-
+ 
     componentDidMount(){
         this.drawOnCanvas();
     }
-
+ 
     //Method to draw on the board
     drawOnCanvas(){
         window.addEventListener('load', ()=>{
@@ -19,10 +19,10 @@ class Whiteboard extends Component {
             document.addEventListener('mousemove', sketch);
             document.addEventListener('click', sketch);
             document.addEventListener('resize', resize);
+            
         });
         
         const canvas = document.querySelector('#board');
-        
         const context = canvas.getContext('2d');
         
         function resize(){
@@ -42,33 +42,35 @@ class Whiteboard extends Component {
             paint=true;
             getPosition(event);
         }
+
         function stopPainting(){
             paint=false;
         }
-        function sketch(event){
+
+        let sketch = (event) => {
             if(!paint) return;
             context.beginPath();
-     
+        
             context.lineWidth = 4;
-     
+        
             context.lineCap = 'round';
-            context.strokeStyle = 'black';
-
+            context.strokeStyle = this.props.color;
+        
             context.moveTo(coordinates.x, coordinates.y);
-     
+        
             getPosition(event);
-     
+        
             context.lineTo(coordinates.x, coordinates.y);
-     
+        
             context.stroke();
         }
     }
-
+ 
     render() {
         return(
-            <canvas className="Whiteboard" id="board"></canvas>
+            <canvas className="Whiteboard" id="board"/>
         )
     }
-}
-
-export default Whiteboard;
+ }
+ 
+ export default Whiteboard;

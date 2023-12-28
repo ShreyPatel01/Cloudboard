@@ -1,33 +1,40 @@
-import {useState } from 'react';
+import {Component} from 'react';
 import Whiteboard from './Whiteboard';
 import './ContainerStyle.css';
 
-const Container = () => {
-    const[color, setColor] = useState('black');
+class Container extends Component{
+    constructor(props){
+        super(props);
+        this.state = {
+            color:'black'
+        };
+    };
 
-    const changeColor = (event) => {
-        setColor(event.target.value);
+    changeColor(event){
+        this.setState({
+            color: event.target.value
+        });
     }
 
-    return (
-        <div className="container">
-            <div className="header">
-                CloudBoard
-            </div>
-            <div className="tool-sidebar">
-                <div className="color-picker">
-                    <button className="color-picker">
-                        <input id="color-picker" type = "color" value={color} onChange= {changeColor}/>
-                    </button>
+    render() {
+        return (
+            <div className="container">
+                <div className="header">
+                    CloudBoard
+                </div>
+                <div className="tool-sidebar">
+                    <div className="color-picker">
+                        <button className="color-picker">
+                            <input type="color" id="color" value={this.state.color} onChange={this.changeColor.bind(this)}/>
+                        </button>
+                    </div>
+                </div>
+                <div className="board">
+                    <Whiteboard color={this.state.color}/>
                 </div>
             </div>
-            <div className="board">
-                <Whiteboard color={color}>
-
-                </Whiteboard>
-            </div>
-        </div>
-    )
+        )
+    }
 }
 
 export default Container;
