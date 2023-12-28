@@ -51,7 +51,7 @@ class Whiteboard extends Component {
             if(!paint) return;
             context.beginPath();
         
-            context.lineWidth = 4;
+            context.lineWidth = this.props.size;
         
             context.lineCap = 'round';
             context.strokeStyle = this.props.color;
