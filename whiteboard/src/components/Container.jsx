@@ -7,7 +7,8 @@ class Container extends Component{
         super(props);
         this.state = {
             color:'black',
-            size:4
+            size:4,
+            eraserIsActive:false
         };
     };
 
@@ -19,6 +20,12 @@ class Container extends Component{
     changeSize(event){
         this.setState({
             size: event.target.value
+        });
+    }
+    eraser(event){
+        this.setState({
+            color:'white',
+            eraserIsActive: !this.state.eraserIsActive
         });
     }
 
@@ -36,7 +43,12 @@ class Container extends Component{
                     </div>
                     <div className="draw-size">
                         <button className="draw-size">
-                            <input type="range" id="size" min="1" max="10" value={this.state.size} onChange={this.changeSize.bind(this)}/>
+                            <input type="range" id="size" min="1" max="20" value={this.state.size} onChange={this.changeSize.bind(this)}/>
+                        </button>
+                    </div>
+                    <div className="draw-eraser">
+                        <button className="eraser" onClick={this.eraser.bind(this)}>
+                            <img src="eraser_icon.jpg" className="icon" alt="eraser"/>
                         </button>
                     </div>
                 </div>
