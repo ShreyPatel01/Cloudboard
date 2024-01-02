@@ -1,9 +1,23 @@
 import { Component } from "react";
-
-import ('./WhiteboardStyle.css')
+import io from 'socket.io-client';
+import ('./WhiteboardStyle.css');
 class Whiteboard extends Component {
+
+    timeout;
+    socket = io.connect("http://localhost:5000");
     constructor(props){
         super(props);
+
+        this.socket.on('canvas-data',function(data){
+            var image = new Image();
+            var canvas = document.querySelector('#board');
+            var context = canvas.getContext('2d');
+            image.onload = function() {
+                context.drawImage(image,0,0);
+
+            };
+            image.src = data;
+        })
     }
  
     componentDidMount(){
@@ -30,17 +44,7 @@ class Whiteboard extends Component {
                 context.moveTo(coordinates.x, coordinates.y);
                 getPosition(event);
                 context.lineTo(coordinates.x, coordinates.y);
-                context.stroke();
-            },
-            'rectangle': function(context, coordinates, event){
-                let rectStartX = coordinates.x;
-                let rectStartY = coordinates.y;
-                context.lineWidth = this.props.size;
-                context.strokeStyle = this.props.color;
-                context.moveTo(coordinates.x, coordinates.y);
-                getPosition(event);
-                context.rect(rectStartX, rectStartY, coordinates.x - rectStartX, coordinates.y - rectStartY);
-                context.stroke();
+                context.stroke(); 
             },
             'eraser': function(context,coordinates,event){
                 context.beginPath();
@@ -50,7 +54,7 @@ class Whiteboard extends Component {
                 context.moveTo(coordinates.x, coordinates.y);
                 getPosition(event);
                 context.lineTo(coordinates.x, coordinates.y);
-                context.stroke();
+                context.stroke();     
             }
         };
         
@@ -85,14 +89,24 @@ class Whiteboard extends Component {
         }
 
         let sketch = (event) => {
-            if(!paint) return;
-            if(this.props.drawMode === 'pencil'){
-                drawingMode['pencil'].call(this, context, coordinates, event);
-            } else if(this.props.drawMode === 'rectangle'){
-                drawingMode['rectangle'].call(this,context,coordinates,event);
-            }else if(this.props.drawMode === 'eraser'){
-                drawingMode['eraser'].call(this,context,coordinates,event);
-            }
+            var root = this;
+            if(!paint || !coordinates) return;
+            switch(this.props.drawMode){
+                case 'pencil':
+                    drawingMode['pencil'].call(this, context, coordinates, event);
+                    break;
+                case 'eraser':
+                    drawingMode['eraser'].call(this,context,coordinates,event);
+                    break;
+                default:
+                    break;
+           }
+
+           if (root.timeout !== undefined) clearTimeout(root.timeout);
+           root.timeout = setTimeout(function () {
+               var base64ImageData = canvas.toDataURL("image/png");
+               root.socket.emit("canvas-data", base64ImageData);
+           }, 1000);
         }
     }
  

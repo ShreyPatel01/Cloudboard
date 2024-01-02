@@ -16,11 +16,6 @@ class Container extends Component{
             drawMode: 'pencil'
         });        
     }
-    rectangleDraw(){
-        this.setState({
-            drawMode: 'rectangle'
-        });
-    }
     changeColor(event){
         this.setState({
             color: event.target.value
@@ -49,11 +44,6 @@ class Container extends Component{
                             <img src="pencil_icon.jpg" className='icon' alt="pencil"/>
                         </button>
                     </div> 
-                    <div className="rectangle-mode">
-                        <button className="rectangle" onClick={this.rectangleDraw.bind(this)}>
-                            <img src="rectangle_icon.png" className='icon' alt="rectangle"/>
-                        </button>
-                    </div> 
                     <div className="color-picker">
                         {/* Need to fix this so the entire button can be clicked and the colour change window pops up */}
                         <button className="color-picker">
@@ -76,7 +66,7 @@ class Container extends Component{
                 </div>
                 {/*Whiteboard canvas*/}
                 <div className="board">
-                    <Whiteboard color={this.state.color} size={this.state.size} eraser={this.state.eraserIsActive} drawMode={this.state.drawMode}/>
+                    <Whiteboard color={this.state.color} size={this.state.size} drawMode={this.state.drawMode}/>
                 </div>
             </div>
         )
