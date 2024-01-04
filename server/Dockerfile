@@ -1,12 +1,12 @@
-FROM node:16-alpine
+FROM node:16-alpine AS Server
 
-WORKDIR /app
+ENV NODE_ENV=server
 
-COPY package*.json ./
-
-RUN npm install
+WORKDIR /usr/src/server
 
 COPY . .
+
+RUN npm install
 
 EXPOSE 5000
 

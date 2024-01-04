@@ -1,6 +1,8 @@
-FROM node:16-alpine
+FROM node:16-alpine AS Whiteboard
 
-WORKDIR /app
+ENV NODE_ENV=whiteboard
+
+WORKDIR /usr/src/Whiteboard
 
 COPY package*.json ./
 

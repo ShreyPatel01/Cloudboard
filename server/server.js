@@ -9,7 +9,7 @@ var io = require('socket.io')(http, {
     }
 });
 var cors = require('cors');
-const { Client } = require('socket.io/dist/client');
+const Client  = require('socket.io');
 
 app.use(cors({
     origin: '*',

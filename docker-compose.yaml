@@ -1,0 +1,44 @@
+version: "3.8"
+
+services:
+  cassandra:
+    image: cassandra:latest
+    restart: always
+    ports:
+      - 9042:9042
+    volumes:
+      - ./data/cassandra:/var/lib/cassandra
+    networks:
+      - shared-network
+  server:
+    container_name: whiteboard_server
+    restart: unless-stopped
+    image: whiteboard_server:1.0.0
+    build:
+      context: server
+      target: server
+      dockerfile: Dockerfile
+    ports:
+      - 5000:5000
+    networks:
+      - shared-network
+    depends_on:
+      - cassandra
+  whiteboard:
+    container_name: whiteboard_app
+    restart: unless-stopped
+    image: whiteboard_app:1.0.0
+    build:
+      context: whiteboard
+      target: whiteboard
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    networks:
+      - shared-network
+    depends_on:
+      - server
+
+networks:
+  shared-network:
+     
