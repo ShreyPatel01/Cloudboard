@@ -31,6 +31,11 @@ class Container extends Component{
             drawMode: 'eraser'
         });
     }
+    rectangleDraw(){
+        this.setState({
+            drawMode: 'rectangle'
+        });
+    }
 
     render() {
         return (
@@ -43,6 +48,11 @@ class Container extends Component{
                         <button className="pencil" onClick={this.pencilDraw.bind(this)}>
                             <img src="pencil_icon.jpg" className='icon' alt="pencil"/>
                         </button>
+                    </div>
+                    <div className="rectangle-mode">
+                        <button className="rectangle" onClick={this.rectangleDraw.bind(this)}>
+                            <img src="rectangle_icon.png" className='icon' alt='rectangle'/>
+                        </button>    
                     </div> 
                     <div className="color-picker">
                         {/* Need to fix this so the entire button can be clicked and the colour change window pops up */}

@@ -5,6 +5,10 @@ class Whiteboard extends Component {
 
     timeout;
     socket = io.connect("http://localhost:5000");
+    startX;
+    startY;
+    finalX;
+    finalY;
     constructor(props){
         super(props);
 
@@ -33,34 +37,69 @@ class Whiteboard extends Component {
             document.addEventListener('mousemove', sketch);
             document.addEventListener('click', sketch);
             document.addEventListener('resize', resize);
-            
         });
+        
         const drawingMode = {
             'pencil': function(context, coordinates, event){
-                context.beginPath();
-                context.lineWidth = this.props.size;
-                context.lineCap = 'round';
-                context.strokeStyle = this.props.color;
-                context.moveTo(coordinates.x, coordinates.y);
-                getPosition(event);
-                context.lineTo(coordinates.x, coordinates.y);
-                context.stroke(); 
+                drawFree.call(this, context, coordinates, event, this.props.color);
             },
             'eraser': function(context,coordinates,event){
-                context.beginPath();
-                context.lineWidth = this.props.size;
-                context.lineCap = 'round';
-                context.strokeStyle = 'white';
-                context.moveTo(coordinates.x, coordinates.y);
-                getPosition(event);
-                context.lineTo(coordinates.x, coordinates.y);
-                context.stroke();     
+                drawFree.call(this, context, coordinates, event, 'white');
+            },
+            'rectangle': function(context, startX, startY, width, height, strokeStyle){
+                drawRect.call(this, context, startX, startY, width, height, strokeStyle);
             }
         };
+
+        function drawFree(context, coordinates, event, strokeStyle){
+            context.beginPath();
+            context.lineWidth = this.props.size;
+            context.lineCap = 'round';
+            context.strokeStyle = strokeStyle;
+            context.moveTo(coordinates.x, coordinates.y);
+            getPosition(event);
+            context.lineTo(coordinates.x, coordinates.y);
+            context.stroke();
+        }
+
+        function drawRect(context, startX, startY, width, height, strokeStyle){
+            context.beginPath();
+            context.lineWidth = this.props.size;
+            context.lineCap = 'round';
+            context.strokeStyle = strokeStyle;
+            context.rect(startX, startY, width, height);
+            context.stroke();
+            context.closePath();
+        }
+
+        function lastCreatedObject(){
+            if(this.props.drawMode === 'rectangle'){
+                return{
+                    type: 'rectangle',
+                    startX: this.startX,
+                    startY: this.startY,
+                    endX: coordinates.x,
+                    endY: coordinates.y,
+                    strokeStyle: this.props.color,
+                    lineWidth: this.props.size
+                };
+            } else if (this.props.drawMode === 'pencil'){
+                return{
+                    type: 'pencil',
+                    startX: this.startX,
+                    startY: this.startY,
+                    width: this.finalX - this.startX,
+                    height: this.finalY - this.startY,
+                    strokeStyle: this.props.color,
+                    lineWidth: this.props.size
+                };
+            }
+        }
         
         const canvas = document.querySelector('#board');
         //Context for the canvas for 2d operations
         const context = canvas.getContext('2d');
+        
         
         //Resizes the canvas
         //Need to change this to one size before implementing sockets
@@ -72,6 +111,7 @@ class Whiteboard extends Component {
         //Stores initial cursor position
         let coordinates = {x:0, y:0};
         let paint = false;
+        let rectDraw;
         
         //Updates cursor co-ordinates when an event is triggered to where the cursor is
         function getPosition(event){
@@ -79,13 +119,27 @@ class Whiteboard extends Component {
             coordinates.y = event.clientY - canvas.offsetTop;
         }
         
-        function startPainting(event){
+        let startPainting = (event) =>{
             paint=true;
             getPosition(event);
+            if (this.props.drawMode === 'rectangle'){
+                paint = true;
+                this.startX = event.clientX;
+                this.startY = event.clientY;
+                rectDraw = true;
+            }
         }
 
-        function stopPainting(){
+        let stopPainting = (event) =>{
             paint=false;
+            if(this.props.drawMode === 'rectangle'){
+                this.finalX = event.clientX;
+                this.finalY = event.clientY;
+                rectDraw = false;
+                let width = this.finalX - this.startX;
+                let height = this.finalY - this.startY;
+                drawingMode['rectangle'].call(this,context, this.startX, this.startY, width, height, this.props.color);
+            }
         }
 
         let sketch = (event) => {
@@ -106,6 +160,8 @@ class Whiteboard extends Component {
            root.timeout = setTimeout(function () {
                var base64ImageData = canvas.toDataURL("image/png");
                root.socket.emit("canvas-data", base64ImageData);
+               //emits an event with the last object created
+               root.socket.emit("objectCreated", lastCreatedObject);
            }, 1000);
         }
     }
