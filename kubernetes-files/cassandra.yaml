@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: cassandra-database
+  labels:
+    app: cassandra
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cassandra
+  template:
+    metadata:
+      labels:
+        app: cassandra
+    spec:
+      containers:
+      - name: cassandradb
+        image: cassandra:latest
+        ports:
+        - containerPort: 9042
+          name: cassandra
+      volumeMounts:
+        - name: cassandra-storage
+          mountPath: /var/lib/cassandra
+          
+---
+apiVersion: apps/v1
+kind: Service
+metadata:
+  name: cassandra-service
+spec:
+  selector:
+    app: cassandra
+  ports:
+    - protocol: TCP
+      port: 9042
+      targetPort: 9042
+

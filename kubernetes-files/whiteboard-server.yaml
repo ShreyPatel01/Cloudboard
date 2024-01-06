@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: whiteboard-backend
+  labels: 
+    app: whiteboard-server
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: whiteboard-server
+  template:
+    metadata:
+      labels:
+        app: whiteboard-server
+    spec:
+      containers:
+      - name: backend
+        image: mynameshrey/whiteboard-server
+        ports:
+        - containerPort: 5000
+        env:
+        - name: cassandra-url
+          value: "cassandra-service:9042"
+---
+apiVersion: apps/v1
+kind: Service
+metadata:
+  name: whiteboard-server-service
+spec:
+  selector:
+    app: whiteboard-server
+  ports:
+    - protocol: TCP
+      port: 5000
+      targetPort: 5000

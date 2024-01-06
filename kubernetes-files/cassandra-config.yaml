@@ -1,0 +1,6 @@
+apiVersion: apps/v1
+kind: ConfigMap
+metadata:
+  name: cassandra-config
+data:
+  cassandra-url: cassandra-service

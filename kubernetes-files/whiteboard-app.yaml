@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: whiteboard-app
+  labels:
+    app: mynameshrey/whiteboard-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: mynameshrey/whiteboard-app
+  template:
+    metadata:
+      labels:
+        app: mynameshrey/whiteboard-app
+    spec:
+      containers:
+      - name: whiteboard
+        image: mynameshrey/whiteboard-app
+        ports:
+        - containerPort: 3000
+        env:
+        - name: REACT_APP_SERVER_URL
+          value: "http://localhost:3000"
+---
+apiVersion: apps/v1
+kind: Service
+metadata:
+  name: whiteboard-app-service
+spec:
+  selector:
+    app: mynameshrey/whiteboard-app
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+
