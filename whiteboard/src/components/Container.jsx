@@ -8,13 +8,16 @@ class Container extends Component{
         this.state = {
             color:'black',
             size:4,
-            drawMode: 'pencil'
+            drawMode: 'pencil',
+            activeButton: ''
         };
     };
-    pencilDraw(){
+
+    handleButtonClick(buttonName, buttonMode){
         this.setState({
-            drawMode: 'pencil'
-        });        
+            activeButton: buttonName,
+            drawMode: buttonMode
+        });
     }
     changeColor(event){
         this.setState({
@@ -26,16 +29,6 @@ class Container extends Component{
             size: event.target.value
         });
     }
-    eraser(){
-        this.setState({
-            drawMode: 'eraser'
-        });
-    }
-    rectangleDraw(){
-        this.setState({
-            drawMode: 'rectangle'
-        });
-    }
 
     render() {
         return (
@@ -44,17 +37,17 @@ class Container extends Component{
                     CloudBoard
                 </div>
                 <div className="tool-sidebar">
-                    <div className="pencil-mode">
-                        <button className="pencil" onClick={this.pencilDraw.bind(this)}>
-                            <img src="pencil_icon.jpg" className='icon' alt="pencil"/>
-                        </button>
+                    <div className="feature-button">
+                    <button className={`${this.state.activeButton === 'pencil' ? 'active' : ''}`} onClick={() => this.handleButtonClick('pencil', 'pencil')}>
+                        <img src="pencil_icon.jpg" className='icon' alt="pencil"/>
+                    </button>
                     </div>
-                    <div className="rectangle-mode">
-                        <button className="rectangle" onClick={this.rectangleDraw.bind(this)}>
+                    <div className="feature-button">
+                        <button className={`${this.state.activeButton === 'rectangle' ? 'active' : ''}`} onClick= {() => this.handleButtonClick('rectangle','rectangle')}>
                             <img src="rectangle_icon.png" className='icon' alt='rectangle'/>
                         </button>    
                     </div> 
-                    <div className="color-picker">
+                    <div className="feature-button">
                         {/* Need to fix this so the entire button can be clicked and the colour change window pops up */}
                         <button className="color-picker">
                             <img src="colour_change_icon.png" className="icon" alt="Change Color"/>
@@ -62,14 +55,14 @@ class Container extends Component{
                         </button>
                     </div>
                     {/*Resize button for drawing */}
-                    <div className="draw-size">
+                    <div className="feature-button">
                         <button className="draw-size">
                             <input type="range" id="size" min="1" max="30" value={this.state.size} onChange={this.changeSize.bind(this)}/>
                         </button>
                     </div>
                     {/*Eraser button*/}
-                    <div className="draw-eraser">
-                        <button className="eraser" onClick={this.eraser.bind(this)}>
+                    <div className="feature-button">
+                        <button className={`${this.state.activeButton === 'eraser' ? 'active' : ''}`} onClick={() => this.handleButtonClick('eraser','eraser')}>
                             <img src="eraser_icon.jpg" className="icon" alt="eraser"/>
                         </button>
                     </div>
