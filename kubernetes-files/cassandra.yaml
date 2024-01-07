@@ -5,7 +5,7 @@ metadata:
   labels:
     app: cassandra
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: cassandra
