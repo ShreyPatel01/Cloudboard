@@ -1,7 +1,7 @@
 var app = require('express')();
 var http = require('http').createServer(app);
 var cassandra = require('cassandra-driver');
-const client = new cassandra.Client({ contactPoints: ['localhost'], localDataCenter: 'datacenter1' });
+const client = new cassandra.Client({ contactPoints: ['cassandra-service'], localDataCenter: 'europe-west2' });
 var io = require('socket.io')(http, {
     cors: {
         origin: '*',
