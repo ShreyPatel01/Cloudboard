@@ -1,0 +1,1 @@
+JVM_OPTS="$JVM_OPTS -Xms1024M -Xmx1024M -Xmn768M -XX:+UseParNewGC -XX:+CMSClassUnloadingEnabled -XX:+ExplicitGCInvokesConcurrent"
