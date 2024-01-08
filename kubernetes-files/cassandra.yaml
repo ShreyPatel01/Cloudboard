@@ -16,7 +16,7 @@ spec:
    spec:
      containers:
      - name: cassandradb
-       image: cassandra:latest
+       image: bitnami/cassandra:latest
        ports:
        - containerPort: 9042
          name: cassandra
