@@ -9,6 +9,7 @@ services:
     volumes:
       - ./data/cassandra:/var/lib/cassandra
       - ./schema.cql:/docker-entrypoint-initdb.d/schema.cql
+      - ./cassandra-env.sh:/etc/cassandra/conf/cassandra-env.sh
     networks:
       - shared-network
   server:
