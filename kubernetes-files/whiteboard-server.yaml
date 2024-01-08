@@ -28,6 +28,7 @@ kind: Service
 metadata:
   name: whiteboard-server-service
 spec:
+  type: LoadBalancer
   selector:
     app: whiteboard-server
   ports:
