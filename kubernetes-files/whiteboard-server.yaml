@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: backend
-        image: mynameshrey/whiteboard-server
+        image: mynameshrey/whiteboard_server:v1.1
         ports:
         - containerPort: 5000
         env:
