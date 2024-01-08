@@ -3,16 +3,16 @@ kind: StatefulSet
 metadata:
   name: whiteboard-app
   labels:
-    app: mynameshrey/whiteboard-app
+    app: whiteboard-app
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: mynameshrey/whiteboard-app
+      app: whiteboard-app
   template:
     metadata:
       labels:
-        app: mynameshrey/whiteboard-app
+        app: whiteboard-app
     spec:
       containers:
       - name: whiteboard
@@ -29,7 +29,7 @@ metadata:
   name: whiteboard-app-service
 spec:
   selector:
-    app: mynameshrey/whiteboard-app
+    app: whiteboard-app
   ports:
     - protocol: TCP
       port: 3000
