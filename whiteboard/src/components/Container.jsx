@@ -46,9 +46,13 @@ class Container extends Component{
                         <button className={`${this.state.activeButton === 'rectangle' ? 'active' : ''}`} onClick= {() => this.handleButtonClick('rectangle','rectangle')}>
                             <img src="rectangle_icon.png" className='icon' alt='rectangle'/>
                         </button>    
+                    </div>
+                    <div className="feature-button">
+                        <button className={`${this.state.activeButton === 'cirlce' ? 'active' : ''}`} onClick = {() => this.handleButtonClick('circle','circle')}>
+                            <img src = "circle_icon.png" className='icon' alt='circle'/>
+                        </button>
                     </div> 
                     <div className="feature-button">
-                        {/* Need to fix this so the entire button can be clicked and the colour change window pops up */}
                         <button className="color-picker">
                             <img src="colour_change_icon.png" className="icon" alt="Change Color"/>
                             <input type="color" id="color" value={this.state.color} onChange={this.changeColor.bind(this)}/>

@@ -9,6 +9,8 @@ class Whiteboard extends Component {
     startY;
     finalX;
     finalY;
+    rectDraw;
+    circleDraw;
     constructor(props){
         super(props);
 
@@ -21,7 +23,7 @@ class Whiteboard extends Component {
 
             };
             image.src = data;
-        })
+        });
     }
  
     componentDidMount(){
@@ -48,6 +50,9 @@ class Whiteboard extends Component {
             },
             'rectangle': function(context, startX, startY, width, height, strokeStyle){
                 drawRect.call(this, context, startX, startY, width, height, strokeStyle);
+            },
+            'circle': function(context, startX,startY, endX, endY, strokeStyle){
+                drawCircle.call(this,context,startX,startY,endX,endY,strokeStyle);
             }
         };
 
@@ -72,10 +77,19 @@ class Whiteboard extends Component {
             context.closePath();
         }
 
+        function drawCircle(context, startX, startY, finalX, finalY, strokeStyle){
+            context.beginPath();
+            context.lineWidth = this.props.size;
+            context.strokeStyle = strokeStyle;
+            var radius = Math.sqrt(Math.pow(finalX - startX, 2) + Math.pow(finalY - startY, 2));
+            context.arc(startX, startY, radius, 0, 2* Math.PI);
+            context.stroke();
+        }
+
         function lastCreatedObject(){
-            if(this.props.drawMode === 'rectangle'){
+            if(this.props.drawMode === 'pencil'){
                 return{
-                    type: 'rectangle',
+                    type: 'pencil',
                     startX: this.startX,
                     startY: this.startY,
                     endX: coordinates.x,
@@ -83,9 +97,9 @@ class Whiteboard extends Component {
                     strokeStyle: this.props.color,
                     lineWidth: this.props.size
                 };
-            } else if (this.props.drawMode === 'pencil'){
+            } else if (this.props.drawMode === 'rectangle'){
                 return{
-                    type: 'pencil',
+                    type: 'rectangle',
                     startX: this.startX,
                     startY: this.startY,
                     width: this.finalX - this.startX,
@@ -111,7 +125,7 @@ class Whiteboard extends Component {
         //Stores initial cursor position
         let coordinates = {x:0, y:0};
         let paint = false;
-        let rectDraw;
+
         
         //Updates cursor co-ordinates when an event is triggered to where the cursor is
         function getPosition(event){
@@ -122,24 +136,44 @@ class Whiteboard extends Component {
         let startPainting = (event) =>{
             paint=true;
             getPosition(event);
-            if (this.props.drawMode === 'rectangle'){
-                paint = true;
-                this.startX = event.clientX;
-                this.startY = event.clientY;
-                rectDraw = true;
+            switch(this.props.drawMode){
+                case 'rectangle':
+                    paint = true;
+                    this.startX = event.clientX;
+                    this.startY = event.clientY;
+                    this.rectDraw = true;
+                    break;
+                case 'circle':
+                    paint=true;
+                    this.startX = event.clientX;
+                    this.startY = event.clientY;
+                    this.circleDraw = true;
+                    break;
+                default:
+                    break;
             }
-        }
+       }
 
         let stopPainting = (event) =>{
             paint=false;
-            if(this.props.drawMode === 'rectangle'){
-                this.finalX = event.clientX;
-                this.finalY = event.clientY;
-                rectDraw = false;
-                let width = this.finalX - this.startX;
-                let height = this.finalY - this.startY;
-                drawingMode['rectangle'].call(this,context, this.startX, this.startY, width, height, this.props.color);
-            }
+            switch (this.props.drawMode){
+                case 'rectangle':
+                    this.finalX = event.clientX;
+                    this.finalY = event.clientY;
+                    this.rectDraw = false;
+                    let width = this.finalX - this.startX;
+                    let height = this.finalY - this.startY;
+                    drawingMode['rectangle'].call(this,context,this.startX,this.startY,width,height, this.props.color);
+                    break;
+                case 'circle':
+                    this.finalX = event.clientX;
+                    this.finalY = event.clientY;
+                    this.circleDraw = false;
+                    drawingMode['circle'].call(this,context,this.startX,this.startY,this.finalX,this.finalY,this.props.color);
+                    break;
+                default:
+                    break;
+           }
         }
 
         let sketch = (event) => {
