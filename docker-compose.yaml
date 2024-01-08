@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   cassandra:
-    image: cassandra:latest
+    image: bitnami/cassandra:latest
     restart: always
     ports:
       - 9042:9042
@@ -15,7 +15,7 @@ services:
   server:
     container_name: whiteboard_server
     restart: unless-stopped
-    image: whiteboard_server:1.0.0
+    image: mynameshrey/whiteboard_server:v1.1
     build:
       context: server
       target: server
@@ -29,7 +29,7 @@ services:
   whiteboard:
     container_name: whiteboard_app
     restart: unless-stopped
-    image: whiteboard_app:1.0.0
+    image: mynameshrey/whiteboard_app:v1.1
     build:
       context: whiteboard
       target: whiteboard
