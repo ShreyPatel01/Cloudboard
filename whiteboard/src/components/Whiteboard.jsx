@@ -4,7 +4,7 @@ import ('./WhiteboardStyle.css');
 class Whiteboard extends Component {
 
     timeout;
-    socket = io.connect("http://localhost:5000");
+    socket = io.connect("http://35.189.76.43:5000");
     startX;
     startY;
     finalX;
