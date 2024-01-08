@@ -7,9 +7,8 @@ services:
     ports:
       - 9042:9042
     volumes:
-      - ./data/cassandra:/var/lib/cassandra
+      - ./data/cassandra:/bitnami/cassandra
       - ./schema.cql:/docker-entrypoint-initdb.d/schema.cql
-      - ./cassandra-env.sh:/etc/cassandra/conf/cassandra-env.sh
     networks:
       - shared-network
   server:

@@ -20,13 +20,19 @@ spec:
        ports:
        - containerPort: 9042
          name: cassandra
+       env:
+       - name: CASSANDRA_USERNAME
+         value: "myuser"
+       - name: CASASNDRA_PASSWORD
+         value: "mypassword"
        volumeMounts:
        - name: cassandra-storage
-         mountPath: /var/lib/cassandra
+         mountPath: /bitnami/cassandra
      volumes:
      - name: cassandra-storage
        persistentVolumeClaim:
          claimName: cassandra-pv-claim
+      
 ---
 apiVersion: v1
 kind: Service
@@ -37,5 +43,5 @@ spec:
    app: cassandra
  ports:
    - protocol: TCP
-     port: 9042
-     targetPort: 9042
+     port: 7000
+     targetPort: 7000
