@@ -87,26 +87,39 @@ class Whiteboard extends Component {
         }
 
         function lastCreatedObject(){
-            if(this.props.drawMode === 'pencil'){
-                return{
-                    type: 'pencil',
-                    startX: this.startX,
-                    startY: this.startY,
-                    endX: coordinates.x,
-                    endY: coordinates.y,
-                    strokeStyle: this.props.color,
-                    lineWidth: this.props.size
-                };
-            } else if (this.props.drawMode === 'rectangle'){
-                return{
-                    type: 'rectangle',
-                    startX: this.startX,
-                    startY: this.startY,
-                    width: this.finalX - this.startX,
-                    height: this.finalY - this.startY,
-                    strokeStyle: this.props.color,
-                    lineWidth: this.props.size
-                };
+            switch(this.props.drawMode){
+                case 'pencil':
+                    return{
+                        type: 'pencil',
+                        startX: this.startX,
+                        startY: this.startY,
+                        endX: coordinates.x,
+                        endY: coordinates.y,
+                        strokeStyle: this.props.color,
+                        lineWidth: this.props.size
+                    };
+                case 'rectangle':
+                    return{
+                        type: 'rectangle',
+                        startX: this.startX,
+                        startY: this.startY,
+                        width: (this.finalX - this.startX),
+                        height: this.finalY - this.startY,
+                        strokeStyle: this.props.color,
+                        lineWidth: this.props.size
+                    };
+                case 'circle':
+                    return{
+                        type: 'circle',
+                        startX: this.startX,
+                        startY: this.startY,
+                        endX: this.finalX,
+                        endY: this.finalY,
+                        strokeStyle: this.props.color,
+                        lineWidth: this.props.size
+                    };
+                default:
+                    break;
             }
         }
         
