@@ -23,6 +23,10 @@ spec:
       volumeMounts:
         - name: cassandra-storage
           mountPath: /var/lib/cassandra
+      volumes:
+      - name: cassandra-storage
+        PersistentVolumeClaim:
+        claimName: cassandra-pv-claim
           
 ---
 apiVersion: apps/v1
